@@ -95,24 +95,6 @@ export default function UserPage() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' , flexDirection:'column', alignItems:'center'}}>
-        <ImageBackground source={{uri:"https://img.freepik.com/free-vector/abstract-realistic-technology-particle-background_23-2148420656.jpg"}} resizeMode="cover"
-         style={myStyles.backgroundImage}>
-        <Image
-          source={{
-            uri: profileImage
-          }}
-          style={myStyles.profilePic}
-        />
-        </ImageBackground>
-      
-      <View style={myStyles.profilePicButtonContainer}>
-        <View style={{ marginHorizontal: 35 }}>
-          <AddPictureButton onPress={pickProfileImage}/>
-        </View>
-        <View style={{ marginHorizontal: 35 }}>
-          <RemovePictureButton onPress={removeProfileImage}/>
-        </View>
-      </View>
       <View style={myStyles.userDetailsContainer}>
         <TextInput
           label={"Email"}
@@ -132,6 +114,20 @@ export default function UserPage() {
           style={myStyles.textInput}
           mode="outlined"
           keyboardType="numeric"
+        />
+        <TextInput
+          label={"City"}
+          value={user.city}
+          style={myStyles.textInput}
+          mode="outlined"
+          disabled= {true}
+        />
+        <TextInput
+          label={"Country"}
+          value={user.country}
+          style={myStyles.textInput}
+          mode="outlined"
+          disabled= {true}
         />
         <View style={{marginVertical:10}}>
             <NormalUseButton 

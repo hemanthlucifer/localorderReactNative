@@ -8,7 +8,6 @@ import HomePage from '../pages/HomePage';
 import StartPage from '../pages/StartPage';
 import { NavigationContainer } from '@react-navigation/native';
 import DrawerContent from '../utils/DrawerContent'
-import Subscribe from '../pages/Subscribe';
 
 const DrawerNavigation = () => {
   
@@ -19,7 +18,6 @@ const DrawerNavigation = () => {
     <Drawer.Navigator  screenOptions={{headerShown:false}}  drawerContent={props => <DrawerContent {...props}  />} >
         <Drawer.Screen name='HomeScreen' component={HomePage}/>
         <Drawer.Screen name='UserProfile' component={UserPage}/>
-        <Drawer.Screen name='Subscription' component={Subscribe}/>
     </Drawer.Navigator>
    
   );

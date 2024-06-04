@@ -2,7 +2,6 @@ import * as React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 import HomePage from '../pages/HomePage';
 import UserPage from '../pages/UserPage';
-import Subscribe from '../pages/Subscribe';
 import { Dimensions } from 'react-native';
 
 
@@ -12,13 +11,11 @@ const BottomNavigator = () => {
   const [routes] = React.useState([
     { key: 'home',  focusedIcon: 'home', unfocusedIcon: 'home-outline'},
     { key: 'user',  focusedIcon: 'account-circle', unfocusedIcon:'account-circle-outline' },
-    { key: 'subscription',  focusedIcon: 'crown'},
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomePage,
     user: UserPage,
-    subscription: Subscribe
   });
 
   const screenHeight = Dimensions.get("window").height;
