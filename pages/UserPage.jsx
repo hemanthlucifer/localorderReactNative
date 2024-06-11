@@ -14,6 +14,7 @@ import * as SecureStore from "expo-secure-store"
 import Alerts from "../utils/Alerts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import { UpdateProfile } from "../calls/UpdateProfile";
 
 
 export default function UserPage() {
@@ -22,9 +23,22 @@ export default function UserPage() {
 
   const navigation = useNavigation();
 
-  const [userData,setUserData] = useState('');
+  
 
-  const [profileImage,setprofileImage] = useState('https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.pn');
+  const [userName, setUserName] = useState("");
+  const [userEmail, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [isValidEmail,setValidEmail] = useState(false);
+  const [isValidUsername,setValidUsername] = useState(false);
+  const [isValidPhone,setValidPhone] = useState(false);
+  const [isValidPass,setValidPass] = useState(false);
+
+  const setUserData = (userData)=>{
+     setUserName(userData.userName);
+     setEmail(userData.userEmail);
+     setPhone(userData.phone);
+  }
+
 
   const defaultImage = "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png";
   useEffect(() => {
@@ -32,12 +46,7 @@ export default function UserPage() {
          try{
             const userId = user.userId;
             const userDataFetched = await FetchUserProfile(userId);
-            setUserData(userDataFetched);   
-            if(userDataFetched.profileImage===null){
-              setprofileImage(defaultImage);
-            }else{
-              setprofileImage(userDataFetched.profileImage);
-            }        
+            setUserData(userDataFetched);        
          }catch(e){
           Alert.alert(Alerts.SOMETHINGWENTWRONG,Alerts.SOMETHINGWENTWRONGMESS);
          }
@@ -45,42 +54,6 @@ export default function UserPage() {
     getUserData();
   }, []);
 
-  const pickProfileImage = async () =>{
-    let profilePic = await ImagePicker.launchImageLibraryAsync({
-      
-    });
-
-    if(!profilePic.canceled){
-      setprofileImage(profilePic.assets[0].uri);
-
-      const formData = new FormData();
-      const data = {
-        uri: profilePic.assets[0].uri,
-        type: 'image/jpeg',
-        name: profilePic.assets[0].fileName
-      }
-      formData.append('profileImage',data);
-      const userName = user.userNameState;
-      const accessToken = await SecureStore.getItemAsync('jwtToken');
-      try{
-        const profileURL = await fetch (`${BaseURL.baseUrl}/user/uploadPic/${userName}`,{
-          method:'post',
-          body: formData,
-          headers:{
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        setprofileImage(profileURL);
-      }catch(e){
-        Alert.alert(Alerts.SOMETHINGWENTWRONG,Alerts.SOMETHINGWENTWRONGMESS);
-      }
-    }
-  }
-
-  const removeProfileImage = async () =>{
-    setprofileImage(defaultImage);
-  }
 
   const logout = async()=>{
       try{
@@ -93,27 +66,76 @@ export default function UserPage() {
       }
   }
 
+  const updateProfile = async()=>{
+    try{
+      const updatedProfile = await UpdateProfile(userEmail,userName,phone);
+      setUserData(updatedProfile);
+      user.setUserNameState(updatedProfile.userName);
+      Alert.alert(Alerts.UPDATEPROFILESUCCESS,Alerts.UPDATEPROFILESUCCESSMESS);
+    }catch(e){
+      console.log(e);
+      Alert.alert(Alerts.UNABLETOUPDATEPROFILE,Alerts.UNABLETOUPDATEPROFILEMESS);
+    }
+  }
+
+  const validateEmail = (text)=>{
+    const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+    setEmail(text);
+    if(regex.test(text)){
+      setValidEmail(true);
+    }
+  }
+
+  const validatePhone = (text) =>{
+      
+     const regex = /^[6-9]\d{9}$/;
+     setPhone(text);
+     if(regex.test(text)){
+      setValidPhone(true);
+     }
+
+  }
+
+  const validateUsername =(text) =>{
+
+    const regexUsername = /^[A-Za-z]{4,}$/;
+    setUserName(text);
+    if(regexUsername.test(text)){
+      setValidUsername(true);
+    }
+
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' , flexDirection:'column', alignItems:'center'}}>
       <View style={myStyles.userDetailsContainer}>
         <TextInput
           label={"Email"}
-          value={userData.userEmail}
+          value={userEmail}
           style={myStyles.textInput}
           mode="outlined"
+          onChangeText={(text)=>{
+            validateEmail(text);
+          }}
         />
         <TextInput
           label={"user name"}
-          value={userData.userName}
+          value={userName}
           style={myStyles.textInput}
           mode="outlined"
+          onChangeText={(text)=>{
+            validateUsername(text);
+          }}
         />
         <TextInput
           label={"Phone"}
-          value={userData?.phone?.toString()}
+          value={phone?.toString()}
           style={myStyles.textInput}
           mode="outlined"
           keyboardType="numeric"
+          onChangeText={(text)=>{
+            validatePhone(text);
+          }}
         />
         <TextInput
           label={"City"}
@@ -135,7 +157,9 @@ export default function UserPage() {
             buttonWidth={screenWidth*0.9}
             borderColor={"black"}
             backgroundColor={"black"}
-            textColor={"white"}/>
+            textColor={"white"}
+            onPress={updateProfile}
+            />
         </View>
         <View>
             <NormalUseButton 

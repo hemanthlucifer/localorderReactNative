@@ -10,5 +10,13 @@ export default Alerts ={
     UNABLETOLOGOUTMESS: "Sorry unable to logout please try again",
 
     LOGOUTSUCCESS: "200",
-    LOGOUTSUCESSMESS: "Logged out Sucessfully"
+    LOGOUTSUCESSMESS: "Logged out Sucessfully",
+
+    UNABLETOUPDATEPROFILE: "Oh Oh",
+    UNABLETOUPDATEPROFILEMESS: "Sorry unable to update profile",
+
+    UPDATEPROFILESUCCESS:"User Updated",
+    UPDATEPROFILESUCCESSMESS:"Profile Updated Sucessfully"
+
+
 }
